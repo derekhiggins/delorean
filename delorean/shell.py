@@ -465,30 +465,16 @@ def build(cp, package_info, commit, env_vars, dev_mode, use_public):
             docker_run_cmd.append('--env')
             docker_run_cmd.append("DELOREAN_DEV=1")
 
-    docker_run_cmd.extend(["-t", "--volume=%s:/data" % datadir,
-                           "--volume=%s:/scripts" % scriptsdir,
-                           "--name", "builder-%s" % target,
-                           "delorean/%s" % target,
+    docker_run_cmd.extend(["-t", "builder-%s" % target,
                            "/scripts/build_rpm_wrapper.sh", project_name,
                            "/data/%s" % yumrepodir, str(os.getuid()),
                            str(os.getgid())])
     try:
-        sh.docker("run", docker_run_cmd)
+        sh.docker("exec", docker_run_cmd)
     except Exception as e:
         logger.error('Docker cmd failed. See logs at: %s/%s/' % (datadir,
                                                                  yumrepodir))
         raise e
-    finally:
-        # Kill builder-"target" if running and remove if present
-        try:
-            sh.docker("kill", "builder-%s" % target)
-            sh.docker("wait", "builder-%s" % target)
-        except Exception:
-            pass
-        try:
-            sh.docker("rm", "builder-%s" % target)
-        except Exception:
-            pass
 
     built_rpms = []
     for rpm in os.listdir(yumrepodir_abs):

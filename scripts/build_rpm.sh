@@ -7,6 +7,7 @@ OUTPUT_DIRECTORY=$2
 USER_ID=$3 # chown resulting files to this UID
 GROUP_ID=$4 # chown resulting files to this GUID
 
+rm -rf ~/rpmbuild
 mkdir -p ~/rpmbuild/SOURCES ~/rpmbuild/SPECS $OUTPUT_DIRECTORY
 
 trap finalize EXIT

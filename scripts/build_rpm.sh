@@ -116,4 +116,4 @@ yum-builddep --disablerepo="*source" -y *.spec
 rpmbuild -ba *.spec  --define="upstream_version $UPSTREAMVERSION"
 find ~/rpmbuild/RPMS ~/rpmbuild/SRPMS -type f | xargs cp -t $OUTPUT_DIRECTORY
 
-yum install -y --nogpg $(find $OUTPUT_DIRECTORY -type f -name "*rpm" | grep -v src.rpm) && touch $OUTPUT_DIRECTORY/installed || true
+touch $OUTPUT_DIRECTORY/installed
